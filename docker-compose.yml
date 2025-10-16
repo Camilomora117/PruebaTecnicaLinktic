@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:13            # Usa la imagen oficial de PostgreSQL 13
+    environment:
+      POSTGRES_USER: testuser      # Usuario de la base de datos
+      POSTGRES_PASSWORD: testpassword  # Contraseña para el usuario
+      POSTGRES_DB: testdb         # Nombre de la base de datos a crear
+    ports:
+      - "5432:5432"               # Expone el puerto 5432 en tu máquina local
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Volumen persistente para los datos
+    networks:
+      - backend                   # Red interna para conectar con otros servicios
+
+volumes:
+  postgres-data:
+    driver: local                 # Volumen local para persistir los datos
+
+networks:
+  backend:
+    driver: bridge                # Red interna entre los servicios
