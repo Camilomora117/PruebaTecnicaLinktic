@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventoryWebMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">inventory-service</a> &gt; <a href="index.source.html" class="el_package">com.example.inventoryservice.infrastructure.web.mapper</a> &gt; <span class="el_source">InventoryWebMapper.java</span></div><h1>InventoryWebMapper.java</h1><pre class="source lang-java linenums">package com.example.inventoryservice.infrastructure.web.mapper;
+
+import com.example.inventoryservice.domain.model.Inventory;
+import com.example.inventoryservice.domain.model.InventoryWithProduct;
+import com.example.inventoryservice.domain.model.Product;
+import com.example.inventoryservice.infrastructure.web.dto.InventoryRequest;
+import com.example.inventoryservice.infrastructure.web.dto.InventoryResponse;
+
+/**
+ * Mapper for converting between domain models and DTOs for inventory operations.
+ */
+<span class="nc" id="L12">public class InventoryWebMapper {</span>
+
+    public static Inventory toDomain(InventoryRequest request, Long productId) {
+<span class="nc bnc" id="L15" title="All 2 branches missed.">        if (request == null) {</span>
+<span class="nc" id="L16">            return null;</span>
+        }
+<span class="nc" id="L18">        return new Inventory(productId, request.getQuantity());</span>
+    }
+
+    public static InventoryResponse toResponse(Inventory inventory) {
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (inventory == null) {</span>
+<span class="nc" id="L23">            return null;</span>
+        }
+<span class="fc" id="L25">        return new InventoryResponse(inventory.getProductId(), inventory.getQuantity());</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

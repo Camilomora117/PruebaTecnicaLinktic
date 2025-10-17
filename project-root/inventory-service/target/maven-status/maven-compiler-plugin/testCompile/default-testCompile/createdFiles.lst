@@ -1,0 +1,11 @@
+com\example\inventoryservice\infrastructure\web\mapper\InventoryWebMapperTest.class
+com\example\inventoryservice\infrastructure\persistence\mapper\InventoryMapperTest.class
+com\example\inventoryservice\infrastructure\persistence\adapter\InventoryRepositoryAdapterTest.class
+com\example\inventoryservice\domain\model\PurchaseTest.class
+com\example\inventoryservice\infrastructure\web\controller\InventoryControllerTest.class
+com\example\inventoryservice\InventoryServiceApplicationTest.class
+com\example\inventoryservice\domain\model\InventoryTest.class
+com\example\inventoryservice\infrastructure\web\controller\PurchaseControllerTest.class
+com\example\inventoryservice\application\service\InventoryApplicationServiceTest.class
+com\example\inventoryservice\application\service\PurchaseApplicationServiceTest.class
+com\example\inventoryservice\infrastructure\web\client\ProductCatalogClientTest.class

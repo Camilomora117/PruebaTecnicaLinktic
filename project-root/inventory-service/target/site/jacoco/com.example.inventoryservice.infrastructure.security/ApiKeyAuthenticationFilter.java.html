@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiKeyAuthenticationFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">inventory-service</a> &gt; <a href="index.source.html" class="el_package">com.example.inventoryservice.infrastructure.security</a> &gt; <span class="el_source">ApiKeyAuthenticationFilter.java</span></div><h1>ApiKeyAuthenticationFilter.java</h1><pre class="source lang-java linenums">package com.example.inventoryservice.infrastructure.security;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import com.example.inventoryservice.infrastructure.web.exception.ErrorResponse;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+<span class="fc" id="L26">@RequiredArgsConstructor</span>
+<span class="fc" id="L27">@Slf4j</span>
+public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
+    
+    @Value(&quot;${inventory.api-key}&quot;)
+    private String expectedApiKey;
+    
+    private final ObjectMapper objectMapper;
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+<span class="nc" id="L38">        String path = request.getRequestURI();</span>
+<span class="nc bnc" id="L39" title="All 6 branches missed.">        return path.startsWith(&quot;/swagger-ui&quot;) || path.startsWith(&quot;/v3/api-docs&quot;) || path.startsWith(&quot;/actuator&quot;);</span>
+    }
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, 
+                                  FilterChain filterChain) throws ServletException, IOException {
+        
+<span class="nc" id="L46">        String apiKey = request.getHeader(&quot;X-API-KEY&quot;);</span>
+        
+<span class="nc bnc" id="L48" title="All 4 branches missed.">        if (apiKey == null || apiKey.trim().isEmpty()) {</span>
+<span class="nc" id="L49">            log.warn(&quot;Missing X-API-KEY header for request: {}&quot;, request.getRequestURI());</span>
+<span class="nc" id="L50">            sendUnauthorizedResponse(response, &quot;Missing X-API-KEY header&quot;);</span>
+<span class="nc" id="L51">            return;</span>
+        }
+        
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (!expectedApiKey.equals(apiKey)) {</span>
+<span class="nc" id="L55">            log.warn(&quot;Invalid X-API-KEY for request: {}&quot;, request.getRequestURI());</span>
+<span class="nc" id="L56">            sendUnauthorizedResponse(response, &quot;Invalid X-API-KEY&quot;);</span>
+<span class="nc" id="L57">            return;</span>
+        }
+
+<span class="nc" id="L60">        var authorities = List.of(new SimpleGrantedAuthority(&quot;ROLE_API&quot;));</span>
+<span class="nc" id="L61">        var auth = new UsernamePasswordAuthenticationToken(&quot;api-key-user&quot;, null, authorities);</span>
+<span class="nc" id="L62">        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));</span>
+<span class="nc" id="L63">        SecurityContextHolder.getContext().setAuthentication(auth);</span>
+        
+<span class="nc" id="L65">        log.debug(&quot;Valid X-API-KEY provided for request: {}&quot;, request.getRequestURI());</span>
+<span class="nc" id="L66">        filterChain.doFilter(request, response);</span>
+<span class="nc" id="L67">    }</span>
+    
+    private void sendUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+<span class="nc" id="L70">        response.setStatus(HttpStatus.UNAUTHORIZED.value());</span>
+<span class="nc" id="L71">        response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
+
+<span class="nc" id="L73">        ErrorResponse errorResponse = ErrorResponse.builder()</span>
+<span class="nc" id="L74">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L75">                .status(HttpStatus.UNAUTHORIZED.value())</span>
+<span class="nc" id="L76">                .error(&quot;Unauthorized&quot;)</span>
+<span class="nc" id="L77">                .message(message)</span>
+<span class="nc" id="L78">                .path(&quot;&quot;) // No tenemos acceso directo al path aquí</span>
+<span class="nc" id="L79">                .build();</span>
+
+<span class="nc" id="L81">        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));</span>
+<span class="nc" id="L82">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

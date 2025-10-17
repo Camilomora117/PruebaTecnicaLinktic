@@ -1,8 +1,9 @@
 package com.example.inventoryservice.domain.port.out;
 
-import com.example.inventoryservice.domain.model.ProductView;
+import com.example.inventoryservice.domain.model.Product;
 
 public interface ProductCatalogPort {
     
-    ProductView getById(Long productId);
+    Product getById(Long productId);
 }
+

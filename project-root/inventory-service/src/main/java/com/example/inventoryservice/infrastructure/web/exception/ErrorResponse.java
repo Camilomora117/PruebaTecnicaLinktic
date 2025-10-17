@@ -1,4 +1,4 @@
-package com.example.productservice.infrastructure.web.exception;
+package com.example.inventoryservice.infrastructure.web.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
